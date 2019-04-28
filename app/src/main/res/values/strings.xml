@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Family Tracker</string>
+    <string name="app_name">Friends Locator</string>
     <string name="title_activity_my_navigation">Map</string>
     <string name="title_activity_user_location_main">UserLocationMainActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
