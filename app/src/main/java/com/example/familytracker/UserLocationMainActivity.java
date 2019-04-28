@@ -237,8 +237,8 @@ public class UserLocationMainActivity extends AppCompatActivity
             markerOptions.position(latLng);
             markerOptions.title("Current Location");
             mMap.addMarker(markerOptions);
-            double s = location.getLatitude();
-            double sl = location.getLongitude();
+            String s = String.valueOf(location.getLatitude());
+            String sl = String.valueOf(location.getLongitude());
                 reference.child(auth.getCurrentUser().getUid()).child("lat").setValue(s);
                 reference.child(auth.getCurrentUser().getUid()).child("lng").setValue(sl);
             reference.addValueEventListener(new ValueEventListener() {
