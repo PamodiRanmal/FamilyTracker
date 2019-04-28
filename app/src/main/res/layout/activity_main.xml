@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+
+    <Button
+        android:id="@+id/buttonsi"
+        android:layout_width="match_parent"
+        android:layout_height="59dp"
+        android:text="Sign in"
+        android:onClick="signIn"/>
+
+    <Button
+        android:id="@+id/button2su"
+        android:layout_width="match_parent"
+        android:layout_height="59dp"
+        android:layout_below="@+id/buttonsi"
+        android:text="Sign Up"
+        android:onClick="signUp"/>
+</RelativeLayout>

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "116222082562",
+    "firebase_url": "https://familygpstracker-f406b.firebaseio.com",
+    "project_id": "familygpstracker-f406b",
+    "storage_bucket": "familygpstracker-f406b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:116222082562:android:88142e769fde20d3",
+        "android_client_info": {
+          "package_name": "com.example.familytracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "116222082562-i5usaih684l63flgkc5a0200v7t2igmm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4QGassL5IvbD89JAi0xVMWIWpyhSHkxU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "116222082562-i5usaih684l63flgkc5a0200v7t2igmm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

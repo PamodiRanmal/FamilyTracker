@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".InviteCodeActivity">
+
+    <TextView
+        android:id="@+id/textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="106dp"
+        android:layout_centerHorizontal="true"
+        android:text="xxxxxx"
+        android:textSize="24sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/textview2"
+        android:layout_width="match_parent"
+        android:layout_height="39dp"
+        android:layout_below="@id/textview"
+        android:layout_marginTop="65dp"
+        android:layout_marginEnd="-242dp"
+        android:layout_toStartOf="@id/textview"
+        android:gravity="center_horizontal"
+        android:text="Save this invite code. Your friends will need it to join your circle." />
+
+    <Button
+        android:id="@+id/registerbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/textview"
+        android:layout_below="@id/textview2"
+        android:layout_marginTop="33dp"
+        android:text="REGISTER"
+        android:onClick="registerUser"/>
+
+</RelativeLayout>
