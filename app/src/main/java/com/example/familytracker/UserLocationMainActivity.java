@@ -1,9 +1,13 @@
 package com.example.familytracker;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -15,12 +19,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.view.LayoutInflater;
 import android.view.View;
 
 import com.google.android.material.navigation.NavigationView;
@@ -35,6 +41,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
@@ -42,6 +49,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,6 +57,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +71,7 @@ public class UserLocationMainActivity extends AppCompatActivity
     GoogleApiClient client;
     LocationRequest request;
     LatLng latLng , latLng1;
-    DatabaseReference reference;
+    DatabaseReference reference , ref;
     String current_user_name;
     String current_user_email;
     String current_user_imageurl;
@@ -248,17 +257,20 @@ public class UserLocationMainActivity extends AppCompatActivity
                         String uid;
                         uid = String.valueOf(dataSnapshot.child(auth.getUid()).getValue());
                         CreateUser cu = dataSnapshot.getValue(CreateUser.class);
-
                         for(DataSnapshot dss : dataSnapshot.getChildren()){
                             String id = String.valueOf(dataSnapshot.child(auth.getCurrentUser().getUid()).child("CircleMembers").child("IVOgNjsGpDU0KeecK5B9s9hDRkG3").child("circleMemberId").getValue());
                             String userId = dss.child("userId").getValue(String.class);
+                            String i = String.valueOf(dataSnapshot.child(auth.getCurrentUser().getUid()).child("CircleMembers").child("circleMemberId").getValue());
+                            //Toast.makeText(getApplicationContext(),"i : "+i,Toast.LENGTH_SHORT).show();
                             if(userId.equals(id)){
                                 Double la = Double.parseDouble(String.valueOf(dataSnapshot.child(userId).child("lat").getValue()));
                                 Double lo = Double.parseDouble(String.valueOf(dataSnapshot.child(userId).child("lng").getValue()));
+                                //BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_person_outline_black_24dp);
                                 latLng = new LatLng(la,lo);
                                 MarkerOptions memberMarkerOptions = new MarkerOptions();
                                 memberMarkerOptions.position(latLng);
-                                memberMarkerOptions.title("Friends Location");
+                                memberMarkerOptions.title(" "+dss.child("name").getValue(String.class));
+                                //memberMarkerOptions.icon(BitmapDescriptorFactory.fromPath(current_user_imageurl));
                                 memberMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
                                 mMap.addMarker(memberMarkerOptions);
 
