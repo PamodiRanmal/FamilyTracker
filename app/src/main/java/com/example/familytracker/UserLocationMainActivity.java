@@ -250,7 +250,7 @@ public class UserLocationMainActivity extends AppCompatActivity
                         CreateUser cu = dataSnapshot.getValue(CreateUser.class);
 
                         for(DataSnapshot dss : dataSnapshot.getChildren()){
-                            String id = String.valueOf(dataSnapshot.child(auth.getCurrentUser().getUid()).child("CircleMembers").child("tTSb31kTG5UHZuUTbhDpY7V34P82").child("circleMemberId").getValue());
+                            String id = String.valueOf(dataSnapshot.child(auth.getCurrentUser().getUid()).child("CircleMembers").child("IVOgNjsGpDU0KeecK5B9s9hDRkG3").child("circleMemberId").getValue());
                             String userId = dss.child("userId").getValue(String.class);
                             if(userId.equals(id)){
                                 Double la = Double.parseDouble(String.valueOf(dataSnapshot.child(userId).child("lat").getValue()));
