@@ -269,8 +269,7 @@ public class UserLocationMainActivity extends AppCompatActivity
                         uid = String.valueOf(dataSnapshot.child(auth.getUid()).getValue());
                         CreateUser cu = dataSnapshot.getValue(CreateUser.class);
                         for(DataSnapshot dss : dataSnapshot.getChildren()){
-                            String id = String.valueOf(dataSnapshot.child(auth.getCurrentUser().getUid()).child("CircleMembers").child("IVOgNjsGpDU0KeecK5B9s9hDRkG3").child("circleMemberId").getValue());
-                            //String ia = String.valueOf(FirebaseDatabase.getInstance().getReference("users").child("userId"));
+                            String id = String.valueOf(dataSnapshot.child(auth.getCurrentUser().getUid()).child("CircleMembers").child("vciasdQtTpf7viu0mj6Luy8itTj2").child("circleMemberId").getValue());
                             String userId = dss.child("userId").getValue(String.class);
                             //String i = String.valueOf(dataSnapshot.child(auth.getCurrentUser().getUid()).child("CircleMembers").child());
                             //Toast.makeText(getApplicationContext(),"i : "+ia,Toast.LENGTH_SHORT).show();

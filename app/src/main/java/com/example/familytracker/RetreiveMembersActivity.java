@@ -31,6 +31,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RetreiveMembersActivity extends AppCompatActivity {
 
@@ -41,22 +42,26 @@ public class RetreiveMembersActivity extends AppCompatActivity {
     ArrayList<String> list;
     ArrayAdapter<String> adapter;
     CreateUser user;
-
-    /*public void displayAlart(final String li){
+    String uid;
+    public void displayAlart(final String u , final String li){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Are you shure, You want to delete this user?");
+        builder.setMessage("Are you shure, You want to delete "+li + "?");
         builder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                ref3 = FirebaseDatabase.getInstance().getReference().child("users");
+                ref3 = FirebaseDatabase.getInstance().getReference().child("users").child(auth.getCurrentUser().getUid()).child("CircleMembers");
+                ref4 = FirebaseDatabase.getInstance().getReference().child("users").child("name");
+                ref4.removeValue();
+
                 ref3.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for(DataSnapshot d : dataSnapshot.getChildren()){
-                           String currentuser = auth.getCurrentUser().getUid();
-                           Query q = d.child(currentuser).child("CircleMembers").child("circleMemberId").equals(d.child("userId"));
-                           db1.getInstance().getReference().child("users");
-                           ref4 = FirebaseDatabase.getInstance().getReference().child("users");
+                            String circleid = String.valueOf(d.child("circleMemberId").getValue());
+                            if(circleid.equals(u)){
+                                FirebaseDatabase.getInstance().getReference().child("users").child(auth.getCurrentUser().getUid()).child("CircleMembers").child(circleid).removeValue();
+                                Toast.makeText(getApplicationContext(),"User Deleted Successfully...",Toast.LENGTH_LONG).show();
+                            }
                         }
                     }
 
@@ -65,7 +70,6 @@ public class RetreiveMembersActivity extends AppCompatActivity {
 
                     }
                 });
-                //Toast.makeText(getApplicationContext(),""+li,Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -78,7 +82,7 @@ public class RetreiveMembersActivity extends AppCompatActivity {
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
-    }*/
+    }
 
     @SuppressLint("WrongConstant")
     @Override
@@ -117,6 +121,7 @@ public class RetreiveMembersActivity extends AppCompatActivity {
                                 //String a = String.valueOf(d.child(auth.getCurrentUser().getUid()).getValue());
                                 String u = String.valueOf(d.child("userId").getValue());
                                 if(u.equals(cId)){
+                                     uid = String.valueOf(d.child("userId").getValue());
                                      String name = String.valueOf(d.child("name").getValue());
                                      String email = String.valueOf(d.child("email").getValue());
                                      list.add(name);
@@ -129,7 +134,11 @@ public class RetreiveMembersActivity extends AppCompatActivity {
                                 @Override
                                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                     String li = String.valueOf(listView.getItemAtPosition(position));
-                                    //displayAlart(li);
+                                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+
+                                    //String i = String.valueOf(reference.child("users").child(auth.getCurrentUser().getUid()).child("CircleMembers").child("jme7ao4olQZ3E2tKxSR3GAnv65H3"));
+                                    //Toast.makeText(getApplicationContext(),""+i,Toast.LENGTH_SHORT).show();
+                                    displayAlart(uid,li);
                                 }
                             });
                         }

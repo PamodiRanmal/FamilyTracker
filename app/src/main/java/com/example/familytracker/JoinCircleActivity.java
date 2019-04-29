@@ -66,6 +66,7 @@ public class JoinCircleActivity extends AppCompatActivity {
                                         }
                                     }
                                 });
+
                     }
                 }else {
                     Toast.makeText(getApplicationContext(),"Circle code is not present",Toast.LENGTH_SHORT).show();
