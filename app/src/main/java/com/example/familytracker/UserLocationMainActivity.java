@@ -23,9 +23,12 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -39,6 +42,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.dynamiclinks.DynamicLink;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.squareup.picasso.Picasso;
 
 import androidx.annotation.DrawableRes;
@@ -107,7 +113,7 @@ public class UserLocationMainActivity extends AppCompatActivity
         t2_current_email = header.findViewById(R.id.nametext);
         iv = header.findViewById(R.id.imageView);
         reference = FirebaseDatabase.getInstance().getReference().child("users");
-
+        ref = FirebaseDatabase.getInstance().getReference().child("users").child(auth.getCurrentUser().getUid()).child("CircleMembers");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -169,12 +175,17 @@ public class UserLocationMainActivity extends AppCompatActivity
         } else if (id == R.id.nav_mycircle) {
             Intent intent = new Intent(UserLocationMainActivity.this,RetreiveMembersActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_joinedcircle) {
-
         } else if (id == R.id.nav_invitemembers) {
+            DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink().
+                    setLink(Uri.parse("https://friendslocator.com/app"))
+                    .setDomainUriPrefix("https://familygpstracker.page.link/V9Hh")
+                    .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
+                    .buildDynamicLink();
+            Uri dynamicLinkUri = dynamicLink.getUri();
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
-            intent.putExtra(Intent.EXTRA_TEXT,current_user_name + "Invite you to Share your location. You can join circle by using "+Current_user_code + " invite code");
+            intent.putExtra(Intent.EXTRA_TEXT,current_user_name + " Invite you to Share your location. " +
+                    "You can join circle by using "+Current_user_code + " invite code. You can also Download the app by using "+dynamicLinkUri.toString());
             startActivity(intent.createChooser(intent,"Share using : "));
         } else if (id == R.id.nav_shareLocation){
             Intent intent = new Intent(Intent.ACTION_SEND);
@@ -258,10 +269,10 @@ public class UserLocationMainActivity extends AppCompatActivity
                         uid = String.valueOf(dataSnapshot.child(auth.getUid()).getValue());
                         CreateUser cu = dataSnapshot.getValue(CreateUser.class);
                         for(DataSnapshot dss : dataSnapshot.getChildren()){
-                            String id = String.valueOf(dataSnapshot.child(auth.getCurrentUser().getUid()).child("CircleMembers").child("IVOgNjsGpDU0KeecK5B9s9hDRkG3").child("circleMemberId").getValue());
+                            String id = String.valueOf(dataSnapshot.child(auth.getCurrentUser().getUid()).child("CircleMembers").child("vciasdQtTpf7viu0mj6Luy8itTj2").child("circleMemberId").getValue());
                             String userId = dss.child("userId").getValue(String.class);
-                            String i = String.valueOf(dataSnapshot.child(auth.getCurrentUser().getUid()).child("CircleMembers").child("circleMemberId").getValue());
-                            //Toast.makeText(getApplicationContext(),"i : "+i,Toast.LENGTH_SHORT).show();
+                            //String i = String.valueOf(dataSnapshot.child(auth.getCurrentUser().getUid()).child("CircleMembers").child());
+                            //Toast.makeText(getApplicationContext(),"i : "+ia,Toast.LENGTH_SHORT).show();
                             if(userId.equals(id)){
                                 Double la = Double.parseDouble(String.valueOf(dataSnapshot.child(userId).child("lat").getValue()));
                                 Double lo = Double.parseDouble(String.valueOf(dataSnapshot.child(userId).child("lng").getValue()));

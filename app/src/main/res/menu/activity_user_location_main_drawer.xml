@@ -11,9 +11,6 @@
             android:id="@+id/nav_mycircle"
             android:title="My Circle" />
         <item
-            android:id="@+id/nav_joinedcircle"
-            android:title="Joined Circle" />
-        <item
             android:id="@+id/nav_invitemembers"
             android:title="Invite Members" />
         <item
