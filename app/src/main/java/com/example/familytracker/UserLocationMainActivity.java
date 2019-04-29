@@ -113,7 +113,7 @@ public class UserLocationMainActivity extends AppCompatActivity
         t2_current_email = header.findViewById(R.id.nametext);
         iv = header.findViewById(R.id.imageView);
         reference = FirebaseDatabase.getInstance().getReference().child("users");
-
+        ref = FirebaseDatabase.getInstance().getReference().child("users").child(auth.getCurrentUser().getUid()).child("CircleMembers");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -270,9 +270,10 @@ public class UserLocationMainActivity extends AppCompatActivity
                         CreateUser cu = dataSnapshot.getValue(CreateUser.class);
                         for(DataSnapshot dss : dataSnapshot.getChildren()){
                             String id = String.valueOf(dataSnapshot.child(auth.getCurrentUser().getUid()).child("CircleMembers").child("IVOgNjsGpDU0KeecK5B9s9hDRkG3").child("circleMemberId").getValue());
+                            //String ia = String.valueOf(FirebaseDatabase.getInstance().getReference("users").child("userId"));
                             String userId = dss.child("userId").getValue(String.class);
-                            String i = String.valueOf(dataSnapshot.child(auth.getCurrentUser().getUid()).child("CircleMembers").child("circleMemberId").getValue());
-                            //Toast.makeText(getApplicationContext(),"i : "+i,Toast.LENGTH_SHORT).show();
+                            //String i = String.valueOf(dataSnapshot.child(auth.getCurrentUser().getUid()).child("CircleMembers").child());
+                            //Toast.makeText(getApplicationContext(),"i : "+ia,Toast.LENGTH_SHORT).show();
                             if(userId.equals(id)){
                                 Double la = Double.parseDouble(String.valueOf(dataSnapshot.child(userId).child("lat").getValue()));
                                 Double lo = Double.parseDouble(String.valueOf(dataSnapshot.child(userId).child("lng").getValue()));
