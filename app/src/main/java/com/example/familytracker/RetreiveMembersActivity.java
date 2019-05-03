@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -41,8 +42,10 @@ public class RetreiveMembersActivity extends AppCompatActivity {
     DatabaseReference reference, ref2 , ref3 , ref4;
     ArrayList<String> list;
     ArrayAdapter<String> adapter;
+    ArrayList<String> l;
     CreateUser user;
     String uid;
+    String val;
     public void displayAlart(final String u , final String li){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you shure, You want to delete "+li + "?");
@@ -52,7 +55,6 @@ public class RetreiveMembersActivity extends AppCompatActivity {
                 ref3 = FirebaseDatabase.getInstance().getReference().child("users").child(auth.getCurrentUser().getUid()).child("CircleMembers");
                 ref4 = FirebaseDatabase.getInstance().getReference().child("users").child("name");
                 ref4.removeValue();
-
                 ref3.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -60,7 +62,8 @@ public class RetreiveMembersActivity extends AppCompatActivity {
                             String circleid = String.valueOf(d.child("circleMemberId").getValue());
                             if(circleid.equals(u)){
                                 FirebaseDatabase.getInstance().getReference().child("users").child(auth.getCurrentUser().getUid()).child("CircleMembers").child(circleid).removeValue();
-                                Toast.makeText(getApplicationContext(),"User Deleted Successfully...",Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(),"User Deleted Successfully..."+u,Toast.LENGTH_LONG).show();
+                                finish();
                             }
                         }
                     }
@@ -83,6 +86,7 @@ public class RetreiveMembersActivity extends AppCompatActivity {
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
+
 
     @SuppressLint("WrongConstant")
     @Override
@@ -121,7 +125,7 @@ public class RetreiveMembersActivity extends AppCompatActivity {
                                 //String a = String.valueOf(d.child(auth.getCurrentUser().getUid()).getValue());
                                 String u = String.valueOf(d.child("userId").getValue());
                                 if(u.equals(cId)){
-                                     uid = String.valueOf(d.child("userId").getValue());
+                                     uid = u;
                                      String name = String.valueOf(d.child("name").getValue());
                                      String email = String.valueOf(d.child("email").getValue());
                                      list.add(name);
@@ -135,9 +139,7 @@ public class RetreiveMembersActivity extends AppCompatActivity {
                                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                     String li = String.valueOf(listView.getItemAtPosition(position));
                                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-
-                                    //String i = String.valueOf(reference.child("users").child(auth.getCurrentUser().getUid()).child("CircleMembers").child("jme7ao4olQZ3E2tKxSR3GAnv65H3"));
-                                    //Toast.makeText(getApplicationContext(),""+i,Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(getApplicationContext(),""+list.get(position).substring(9,28),Toast.LENGTH_SHORT).show();
                                     displayAlart(uid,li);
                                 }
                             });
