@@ -128,6 +128,8 @@ public class InviteCodeActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+
     }
 
 }
