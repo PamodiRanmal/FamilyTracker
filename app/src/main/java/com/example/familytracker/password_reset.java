@@ -47,7 +47,7 @@ if(task.isSuccessful()){
   progressBar.setVisibility(View.GONE);
 
   Toast.makeText(password_reset.this, "password reset link was sent to your email", Toast.LENGTH_LONG).show();
-
+//
 }
 
 
