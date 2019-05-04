@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -46,6 +47,7 @@ public class RetreiveMembersActivity extends AppCompatActivity {
     CreateUser user;
     String uid;
     String val;
+    ImageButton ib;
     public void displayAlart(final String u , final String li){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you shure, You want to delete "+li + "?");
@@ -53,7 +55,7 @@ public class RetreiveMembersActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 ref3 = FirebaseDatabase.getInstance().getReference().child("users").child(auth.getCurrentUser().getUid()).child("CircleMembers");
-                ref4 = FirebaseDatabase.getInstance().getReference().child("users").child("name");
+                ref4 = FirebaseDatabase.getInstance().getReference().child("users").child(li);
                 ref4.removeValue();
                 ref3.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -103,6 +105,14 @@ public class RetreiveMembersActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         user = new CreateUser();
+
+        /*ib.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(),"domf",Toast.LENGTH_SHORT).show();
+            }
+        });*/
+
         listView = (ListView) findViewById(R.id.listView);
         db = FirebaseDatabase.getInstance();
         reference = db.getInstance().getReference().child("users").child(auth.getCurrentUser().getUid()).child("CircleMembers");
@@ -138,7 +148,6 @@ public class RetreiveMembersActivity extends AppCompatActivity {
                                 @Override
                                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                     String li = String.valueOf(listView.getItemAtPosition(position));
-                                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                                     //Toast.makeText(getApplicationContext(),""+list.get(position).substring(9,28),Toast.LENGTH_SHORT).show();
                                     displayAlart(uid,li);
                                 }
