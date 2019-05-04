@@ -46,7 +46,7 @@ public class MembersAddapter extends RecyclerView.Adapter<MembersAddapter.Member
     public void onBindViewHolder(MembersViewHolder holder, int position) {
         CreateUser createUser = namelist.get(position);
         holder.name_txt.setText(createUser.name);
-        Picasso.get().load(createUser.imageUri).placeholder(R.drawable.ic_person_outline_black_24dp).into(holder.civ);
+        Picasso.get().load(createUser.imageUri).placeholder(R.drawable.user).into(holder.civ);
     }
 
     public static class MembersViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{

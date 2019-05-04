@@ -6,6 +6,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -50,6 +54,7 @@ import com.squareup.picasso.Picasso;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -62,6 +67,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ZoomControls;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -76,14 +82,14 @@ public class UserLocationMainActivity extends AppCompatActivity
     FirebaseUser user;
     GoogleApiClient client;
     LocationRequest request;
-    LatLng latLng , latLng1;
-    DatabaseReference reference , ref;
+    LatLng latLng, latLng1;
+    DatabaseReference reference, ref;
     String current_user_name;
     String current_user_email;
     String current_user_imageurl;
     String Current_user_code;
     String current_user_location;
-    TextView t1_current_name,t2_current_email;
+    TextView t1_current_name, t2_current_email;
     ImageView iv;
 
     @Override
@@ -170,10 +176,10 @@ public class UserLocationMainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_joincircle) {
-            Intent intent = new Intent(UserLocationMainActivity.this,JoinCircleActivity.class);
+            Intent intent = new Intent(UserLocationMainActivity.this, JoinCircleActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_mycircle) {
-            Intent intent = new Intent(UserLocationMainActivity.this,RetreiveMembersActivity.class);
+            Intent intent = new Intent(UserLocationMainActivity.this, RetreiveMembersActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_invitemembers) {
             DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink().
@@ -184,15 +190,15 @@ public class UserLocationMainActivity extends AppCompatActivity
             Uri dynamicLinkUri = dynamicLink.getUri();
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
-            intent.putExtra(Intent.EXTRA_TEXT,current_user_name + " Invite you to Share your location. " +
-                    "You can join circle by using "+Current_user_code + " invite code. You can also Download the app by using "+dynamicLinkUri.toString());
-            startActivity(intent.createChooser(intent,"Share using : "));
-        } else if (id == R.id.nav_shareLocation){
+            intent.putExtra(Intent.EXTRA_TEXT, current_user_name + " Invite you to Share your location. " +
+                    "You can join circle by using " + Current_user_code + " invite code. You can also Download the app by using " + dynamicLinkUri.toString());
+            startActivity(intent.createChooser(intent, "Share using : "));
+        } else if (id == R.id.nav_shareLocation) {
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
-            intent.putExtra(Intent.EXTRA_TEXT,"My Location is : "+"https://www.google.com/maps/@"+latLng.latitude+","+latLng.longitude+",17z");
-            startActivity(intent.createChooser(intent,"Share using : "));
-        }else if (id == R.id.nav_signOut) {
+            intent.putExtra(Intent.EXTRA_TEXT, "My Location is : " + "https://www.google.com/maps/@" + latLng.latitude + "," + latLng.longitude + ",17z");
+            startActivity(intent.createChooser(intent, "Share using : "));
+        } else if (id == R.id.nav_signOut) {
             FirebaseUser user = auth.getCurrentUser();
             if (user != null) {
                 auth.signOut();
@@ -200,10 +206,6 @@ public class UserLocationMainActivity extends AppCompatActivity
                 startActivity(intent);
                 finish();
             }
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
 
         }
 
@@ -249,14 +251,20 @@ public class UserLocationMainActivity extends AppCompatActivity
 
     @Override
     public void onLocationChanged(Location location) {
-        if(location == null){
-            Toast.makeText(getApplicationContext(),"Could not get location",Toast.LENGTH_SHORT).show();
-        }else{
-            latLng = new LatLng(location.getLatitude(),location.getLongitude());
+        if (location == null) {
+            Toast.makeText(getApplicationContext(), "Could not get location", Toast.LENGTH_SHORT).show();
+        } else {
+            latLng = new LatLng(location.getLatitude(), location.getLongitude());
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(latLng);
             markerOptions.title("Current Location");
+            markerOptions.anchor(0.5f, 1);
             mMap.addMarker(markerOptions);
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            mMap.setMyLocationEnabled(true);
             String s = String.valueOf(location.getLatitude());
             String sl = String.valueOf(location.getLongitude());
                 reference.child(auth.getCurrentUser().getUid()).child("lat").setValue(s);
