@@ -127,11 +127,11 @@
     android:layout_marginTop="8dp"
     android:layout_marginEnd="8dp"
     android:layout_marginBottom="68dp"
+    android:onClick="resetpw"
     android:text="Forgot password? Click here to reset"
     android:textAlignment="center"
     android:textColor="@color/design_default_color_primary"
     android:textStyle="bold"
-    android:onClick="resetpw"
 
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
@@ -139,24 +139,6 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/loginbtn"
     app:layout_constraintVertical_bias="0.126" />
-
-  <Button
-    android:id="@+id/google_sign_in"
-    android:layout_width="51dp"
-    android:layout_height="42dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginBottom="8dp"
-    android:background="@drawable/common_google_signin_btn_icon_light"
-    android:textColor="@color/colorAccent"
-    android:textStyle="bold"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="0.356"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/create_account"
-    app:layout_constraintVertical_bias="0.446" />
 
   <Button
     android:id="@+id/fb_sign_in"
@@ -172,8 +154,42 @@
     android:textStyle="bold"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="0.569"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/create_account"
-    app:layout_constraintVertical_bias="0.42" />
+    app:layout_constraintVertical_bias="0.785" />
+
+
+  <com.google.android.gms.common.SignInButton
+
+    android:id="@+id/googlesignin"
+
+    android:layout_width="251dp"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="8dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.5"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/create_account"
+    app:layout_constraintVertical_bias="0.151">
+
+
+  </com.google.android.gms.common.SignInButton>
+
+  <Button
+    android:id="@+id/googlesignin2"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="8dp"
+    android:text="Button"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toEndOf="@+id/fb_sign_in"
+    app:layout_constraintTop_toBottomOf="@+id/googlesignin1" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -187,19 +187,24 @@ public class UserLocationMainActivity extends AppCompatActivity
             intent.putExtra(Intent.EXTRA_TEXT,current_user_name + " Invite you to Share your location. " +
                     "You can join circle by using "+Current_user_code + " invite code. You can also Download the app by using "+dynamicLinkUri.toString());
             startActivity(intent.createChooser(intent,"Share using : "));
+
+
         } else if (id == R.id.nav_shareLocation){
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
             intent.putExtra(Intent.EXTRA_TEXT,"My Location is : "+"https://www.google.com/maps/@"+latLng.latitude+","+latLng.longitude+",17z");
             startActivity(intent.createChooser(intent,"Share using : "));
+
         }else if (id == R.id.nav_signOut) {
             FirebaseUser user = auth.getCurrentUser();
             if (user != null) {
                 auth.signOut();
-                Intent intent = new Intent(UserLocationMainActivity.this, MainActivity.class);
+                Intent intent = new Intent(UserLocationMainActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
             }
+
+            
 
         } else if (id == R.id.nav_share) {
 

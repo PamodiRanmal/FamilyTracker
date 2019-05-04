@@ -6,25 +6,32 @@
     android:layout_height="match_parent"
     tools:context=".RegisterActivity">
 
-    <EditText
-        android:id="@+id/editText2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="154dp"
-        android:ems="10"
-        android:hint="Enter Your Email"
-        android:inputType="textEmailAddress"
-        android:layout_alignParentEnd="true"/>
+  <EditText
+    android:id="@+id/editText2"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentStart="true"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentEnd="true"
+    android:layout_marginStart="0dp"
+    android:layout_marginTop="276dp"
+    android:layout_marginEnd="0dp"
+    android:ems="10"
+    android:hint="Enter Your Email"
+    android:inputType="textEmailAddress" />
 
-    <Button
-        android:id="@+id/button4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Next"
-        android:onClick="goToPasswordActivity"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"/>
+  <Button
+    android:id="@+id/button4"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentStart="true"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentBottom="true"
+    android:layout_marginStart="0dp"
+    android:layout_marginTop="365dp"
+    android:layout_marginEnd="0dp"
+    android:layout_marginBottom="318dp"
+    android:onClick="goToPasswordActivity"
+    android:text="Next" />
 </RelativeLayout>
