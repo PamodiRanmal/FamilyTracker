@@ -201,9 +201,11 @@ public class UserLocationMainActivity extends AppCompatActivity
         } else if (id == R.id.nav_signOut) {
             FirebaseUser user = auth.getCurrentUser();
             if (user != null) {
+                reference.child(auth.getCurrentUser().getUid()).child("lat").setValue(null);
+                reference.child(auth.getCurrentUser().getUid()).child("lng").setValue(null);
                 auth.signOut();
-                Intent intent = new Intent(UserLocationMainActivity.this, MainActivity.class);
-                startActivity(intent);
+                //Intent intent = new Intent(UserLocationMainActivity.this, MainActivity.class);
+                //startActivity(intent);
                 finish();
             }
 
