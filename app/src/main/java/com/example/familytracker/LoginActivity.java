@@ -14,6 +14,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -28,6 +36,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -43,6 +52,7 @@ import com.karan.churi.PermissionManager.PermissionManager;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
@@ -62,6 +72,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListner;
     public boolean res;
     DatabaseReference reference, userreference;
+    LoginButton loginButton;
 
   String name, email, password, date, isSharing, code;
   Uri imageUri;
@@ -72,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
   ProgressDialog progressDialog;
   String userId;
   StorageReference storageReference;
+  CallbackManager callbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
 
           }
           else {
-           // setContentView(R.layout.activity_login);
+          // setContentView(R.layout.activity_login);
             manager = new PermissionManager() {};
             manager.checkAndRequestPermissions(LoginActivity.this);
 
@@ -104,6 +116,12 @@ public class LoginActivity extends AppCompatActivity {
         //testgoogle=findViewById(R.id.googlesignin2);
         mGoogleBtn=findViewById(R.id.googlesignin);
         auth = FirebaseAuth.getInstance();
+            //FacebookSdk.getApplicationContext();
+       FacebookSdk.sdkInitialize(getApplicationContext());
+         loginButton=(LoginButton) findViewById(R.id.fb_login_button);
+      loginButton.setReadPermissions(Arrays.asList("email"));
+
+         callbackManager=CallbackManager.Factory.create();
 
        ////
 
@@ -151,6 +169,13 @@ mGoogleBtn.setOnClickListener(new View.OnClickListener() {
   }
 });
 
+loginButton.setOnClickListener(new View.OnClickListener() {
+  @Override
+  public void onClick(View v) {
+
+    fbsignIn();
+  }
+});
 
 //      testgoogle.setOnClickListener(new View.OnClickListener() {
 //        @Override
@@ -226,6 +251,62 @@ mGoogleBtn.setOnClickListener(new View.OnClickListener() {
     startActivity(new Intent(LoginActivity.this,password_reset.class));
 
   }
+
+
+  public void fbsignIn(){
+
+
+    LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+      @Override
+      public void onSuccess(LoginResult loginResult) {
+
+
+        handleFacebookToken(loginResult.getAccessToken());
+
+
+      }
+
+      @Override
+      public void onCancel() {
+
+        Toast.makeText(getApplicationContext(),"User cancelled authenication" , Toast.LENGTH_SHORT).show();
+
+      }
+
+      @Override
+      public void onError(FacebookException error) {
+        Toast.makeText(getApplicationContext(),error.getMessage() , Toast.LENGTH_SHORT).show();
+
+      }
+    });
+
+  }
+
+  private void handleFacebookToken(AccessToken accessToken) {
+
+      AuthCredential credential= FacebookAuthProvider.getCredential(accessToken.getToken());
+     auth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+    @Override
+      public void onComplete(@NonNull Task<AuthResult> task) {
+
+      if(task.isSuccessful()) {
+       // FirebaseUser myuserobj = auth.getCurrentUser();
+        Intent intent = new Intent(LoginActivity.this, UserLocationMainActivity.class);
+        startActivity(intent);
+        //finish();
+
+      }
+
+      else {
+
+          Toast.makeText(getApplicationContext(),"Could not authenicate" , Toast.LENGTH_SHORT).show();
+      }
+
+    }
+  });
+
+
+    }
 
 
   public void googlesignIn() {
