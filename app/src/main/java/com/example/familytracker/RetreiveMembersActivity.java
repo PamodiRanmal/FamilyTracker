@@ -125,6 +125,7 @@ public class RetreiveMembersActivity extends AppCompatActivity {
                                      String name = String.valueOf(d.child("name").getValue());
                                      String email = String.valueOf(d.child("email").getValue());
                                      list.add(name);
+
                                 }else{
                                     //Toast.makeText(getApplicationContext(),"Not equal",Toast.LENGTH_SHORT).show();
                                 }

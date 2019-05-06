@@ -10,6 +10,9 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -23,8 +26,10 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -33,8 +38,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -73,6 +80,7 @@ public class UserLocationMainActivity extends AppCompatActivity
 
     private GoogleMap mMap;
     FirebaseAuth auth;
+    private FirebaseAuth.AuthStateListener mAuthListner;
     FirebaseUser user;
     GoogleApiClient client;
     LocationRequest request;
@@ -85,6 +93,7 @@ public class UserLocationMainActivity extends AppCompatActivity
     String current_user_location;
     TextView t1_current_name,t2_current_email;
     ImageView iv;
+  private GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +102,23 @@ public class UserLocationMainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         auth = FirebaseAuth.getInstance();
+        mAuthListner=new FirebaseAuth.AuthStateListener() {
+          @Override
+          public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+      if(firebaseAuth.getCurrentUser()==null){
+
+
+        Intent intent = new Intent(UserLocationMainActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+
+      }
+
+
+
+          }
+        };
         user = auth.getCurrentUser();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -133,8 +159,24 @@ public class UserLocationMainActivity extends AppCompatActivity
 
             }
         });
-    }
 
+//
+    }
+//      GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//        .requestIdToken(getString(R.string.default_web_client_id))
+//        .requestEmail()
+//        .build();
+//      mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+
+    @Override
+    protected void onStart() {
+
+
+      super.onStart();
+
+      auth.addAuthStateListener(mAuthListner);
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -199,12 +241,12 @@ public class UserLocationMainActivity extends AppCompatActivity
             FirebaseUser user = auth.getCurrentUser();
             if (user != null) {
                 auth.signOut();
-                Intent intent = new Intent(UserLocationMainActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
+                LoginActivity.mGoogleSignInClient.signOut();
+              //providerid= providerData.get(1).getEmail();
+
             }
 
-            
+
 
         } else if (id == R.id.nav_share) {
 
