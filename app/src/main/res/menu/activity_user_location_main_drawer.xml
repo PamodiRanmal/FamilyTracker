@@ -4,7 +4,12 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
-        <item
+
+      <item
+        android:id="@+id/nav_myaccount"
+        android:title="My Account" />
+
+      <item
             android:id="@+id/nav_joincircle"
             android:icon="@drawable/ic_person_add_black_24dp"
             android:title="Join Circle" />

@@ -7,18 +7,25 @@
     tools:context=".MainActivity">
 
 
-    <Button
-        android:id="@+id/buttonsi"
-        android:layout_width="match_parent"
-        android:layout_height="59dp"
-        android:text="Sign in"
-        android:onClick="signIn"/>
+  <Button
+    android:id="@+id/buttonsi"
+    android:layout_width="match_parent"
+    android:layout_height="59dp"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentBottom="true"
+    android:layout_marginTop="413dp"
+    android:layout_marginEnd="0dp"
+    android:layout_marginBottom="259dp"
+    android:onClick="signIn"
+    android:text="Sign in" />
 
-    <Button
-        android:id="@+id/button2su"
-        android:layout_width="match_parent"
-        android:layout_height="59dp"
-        android:layout_below="@+id/buttonsi"
-        android:text="Sign Up"
-        android:onClick="signUp"/>
+  <Button
+    android:id="@+id/button2su"
+    android:layout_width="match_parent"
+    android:layout_height="59dp"
+    android:layout_alignParentBottom="true"
+    android:layout_marginBottom="144dp"
+    android:onClick="signUp"
+    android:text="Sign Up" />
 </RelativeLayout>
