@@ -217,7 +217,13 @@ public class UserLocationMainActivity extends AppCompatActivity
         } else if (id == R.id.nav_mycircle) {
             Intent intent = new Intent(UserLocationMainActivity.this,RetreiveMembersActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_invitemembers) {
+        }
+
+        else if (id == R.id.nav_myaccount) {
+          Intent intent = new Intent(UserLocationMainActivity.this,my_account.class);
+          startActivity(intent);
+        }
+        else if (id == R.id.nav_invitemembers) {
             DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink().
                     setLink(Uri.parse("https://friendslocator.com/app"))
                     .setDomainUriPrefix("https://familygpstracker.page.link/V9Hh")

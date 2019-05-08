@@ -43,7 +43,14 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'com.google.firebase:firebase-dynamic-links:16.1.8'
     implementation 'com.google.firebase:firebase-auth:16.2.1'
-    implementation 'com.facebook.android:facebook-android-sdk:4.26.0'
+    implementation 'com.facebook.android:facebook-android-sdk:[4,5]'
+
+    ///libraries for chat app
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:cardview-v7:27.1.1'
+
+    implementation 'com.rengwuxian.materialedittext:library:2.1.4'
 
 }
 apply plugin: 'com.google.gms.google-services'

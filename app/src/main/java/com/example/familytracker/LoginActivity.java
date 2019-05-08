@@ -119,11 +119,12 @@ public class LoginActivity extends AppCompatActivity {
             //FacebookSdk.getApplicationContext();
        FacebookSdk.sdkInitialize(getApplicationContext());
          loginButton=(LoginButton) findViewById(R.id.fb_login_button);
-      loginButton.setReadPermissions(Arrays.asList("email"));
 
          callbackManager=CallbackManager.Factory.create();
+      loginButton.setReadPermissions(Arrays.asList("email"));
 
-       ////
+
+      ////
 
 
 
