@@ -201,12 +201,16 @@ public class UserLocationMainActivity extends AppCompatActivity
         } else if (id == R.id.nav_signOut) {
             FirebaseUser user = auth.getCurrentUser();
             if (user != null) {
-                reference.child(auth.getCurrentUser().getUid()).child("lat").setValue(null);
-                reference.child(auth.getCurrentUser().getUid()).child("lng").setValue(null);
-                auth.signOut();
-                //Intent intent = new Intent(UserLocationMainActivity.this, MainActivity.class);
-                //startActivity(intent);
-                finish();
+                try{
+                    reference.child(auth.getCurrentUser().getUid()).child("lat").setValue("0.0");
+                    reference.child(auth.getCurrentUser().getUid()).child("lng").setValue("0.0");
+                    //auth.signOut();
+                    Intent intent = new Intent(UserLocationMainActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }catch (NullPointerException e){
+
+                }
+                //finish();
             }
 
         }
@@ -215,6 +219,8 @@ public class UserLocationMainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -269,35 +275,52 @@ public class UserLocationMainActivity extends AppCompatActivity
             mMap.setMyLocationEnabled(true);
             String s = String.valueOf(location.getLatitude());
             String sl = String.valueOf(location.getLongitude());
+            if(user != null){
                 reference.child(auth.getCurrentUser().getUid()).child("lat").setValue(s);
                 reference.child(auth.getCurrentUser().getUid()).child("lng").setValue(sl);
+            }
+            else{
+                reference.child(auth.getCurrentUser().getUid()).child("lat").setValue("0.0");
+                reference.child(auth.getCurrentUser().getUid()).child("lng").setValue("0.0");
+            }
             reference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if(dataSnapshot.getValue() != null) {
-                        String uid;
-                        uid = String.valueOf(dataSnapshot.child(auth.getUid()).getValue());
+                        //String uid;
+                        //uid = String.valueOf(dataSnapshot.child(auth.getUid()).getValue());
                         CreateUser cu = dataSnapshot.getValue(CreateUser.class);
-                        for(DataSnapshot dss : dataSnapshot.getChildren()){
-                            String id = String.valueOf(dataSnapshot.child(auth.getCurrentUser().getUid()).child("CircleMembers").child("vciasdQtTpf7viu0mj6Luy8itTj2").child("circleMemberId").getValue());
-                            String userId = dss.child("userId").getValue(String.class);
-                            //String i = String.valueOf(dataSnapshot.child(auth.getCurrentUser().getUid()).child("CircleMembers").child());
-                            //Toast.makeText(getApplicationContext(),"i : "+ia,Toast.LENGTH_SHORT).show();
-                            if(userId.equals(id)){
-                                Double la = Double.parseDouble(String.valueOf(dataSnapshot.child(userId).child("lat").getValue()));
-                                Double lo = Double.parseDouble(String.valueOf(dataSnapshot.child(userId).child("lng").getValue()));
-                                //BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_person_outline_black_24dp);
-                                latLng = new LatLng(la,lo);
-                                MarkerOptions memberMarkerOptions = new MarkerOptions();
-                                memberMarkerOptions.position(latLng);
-                                memberMarkerOptions.title(" "+dss.child("name").getValue(String.class));
-                                //memberMarkerOptions.icon(BitmapDescriptorFactory.fromPath(current_user_imageurl));
-                                memberMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-                                mMap.addMarker(memberMarkerOptions);
+                        for(final DataSnapshot dss : dataSnapshot.getChildren()){
+                            final String userId = dss.child("userId").getValue(String.class);
+                            final String name = dss.child("name").getValue(String.class);
+                            ref.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if(dataSnapshot.getValue() != null){
+                                        for(DataSnapshot d : dataSnapshot.getChildren()){
+                                            String id = String.valueOf(d.child("circleMemberId").getValue());
 
-                            }else {
+                                            if(userId.equals(id)){
+                                                    Double la = Double.parseDouble(String.valueOf(dss.child("lat").getValue()));
+                                                    Double lo = Double.parseDouble(String.valueOf(dss.child("lng").getValue()));
+                                                    latLng = new LatLng(la,lo);
+                                                    MarkerOptions memberMarkerOptions = new MarkerOptions();
+                                                    memberMarkerOptions.position(latLng);
+                                                    memberMarkerOptions.title(" "+name);
+                                                    memberMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                                                    mMap.addMarker(memberMarkerOptions);
+                                                }else {
 
-                            }
+                                                }
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
                         }
                     }else {
                         Toast.makeText(getBaseContext(), "NULLL", Toast.LENGTH_SHORT).show();
