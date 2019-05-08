@@ -6,6 +6,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,9 +27,12 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -39,11 +46,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.dynamiclinks.DynamicLink;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.squareup.picasso.Picasso;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -56,6 +67,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ZoomControls;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -70,14 +82,14 @@ public class UserLocationMainActivity extends AppCompatActivity
     FirebaseUser user;
     GoogleApiClient client;
     LocationRequest request;
-    LatLng latLng , latLng1;
-    DatabaseReference reference , ref;
+    LatLng latLng, latLng1;
+    DatabaseReference reference, ref;
     String current_user_name;
     String current_user_email;
     String current_user_imageurl;
     String Current_user_code;
     String current_user_location;
-    TextView t1_current_name,t2_current_email;
+    TextView t1_current_name, t2_current_email;
     ImageView iv;
 
     @Override
@@ -107,7 +119,7 @@ public class UserLocationMainActivity extends AppCompatActivity
         t2_current_email = header.findViewById(R.id.nametext);
         iv = header.findViewById(R.id.imageView);
         reference = FirebaseDatabase.getInstance().getReference().child("users");
-
+        ref = FirebaseDatabase.getInstance().getReference().child("users").child(auth.getCurrentUser().getUid()).child("CircleMembers");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -164,35 +176,42 @@ public class UserLocationMainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_joincircle) {
-            Intent intent = new Intent(UserLocationMainActivity.this,JoinCircleActivity.class);
+            Intent intent = new Intent(UserLocationMainActivity.this, JoinCircleActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_mycircle) {
-            Intent intent = new Intent(UserLocationMainActivity.this,RetreiveMembersActivity.class);
+            Intent intent = new Intent(UserLocationMainActivity.this, RetreiveMembersActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_joinedcircle) {
-
         } else if (id == R.id.nav_invitemembers) {
+            DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink().
+                    setLink(Uri.parse("https://friendslocator.com/app"))
+                    .setDomainUriPrefix("https://familygpstracker.page.link/V9Hh")
+                    .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
+                    .buildDynamicLink();
+            Uri dynamicLinkUri = dynamicLink.getUri();
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
-            intent.putExtra(Intent.EXTRA_TEXT,current_user_name + "Invite you to Share your location. You can join circle by using "+Current_user_code + " invite code");
-            startActivity(intent.createChooser(intent,"Share using : "));
-        } else if (id == R.id.nav_shareLocation){
+            intent.putExtra(Intent.EXTRA_TEXT, current_user_name + " Invite you to Share your location. " +
+                    "You can join circle by using " + Current_user_code + " invite code. You can also Download the app by using " + dynamicLinkUri.toString());
+            startActivity(intent.createChooser(intent, "Share using : "));
+        } else if (id == R.id.nav_shareLocation) {
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
-            intent.putExtra(Intent.EXTRA_TEXT,"My Location is : "+"https://www.google.com/maps/@"+latLng.latitude+","+latLng.longitude+",17z");
-            startActivity(intent.createChooser(intent,"Share using : "));
-        }else if (id == R.id.nav_signOut) {
+            intent.putExtra(Intent.EXTRA_TEXT, "My Location is : " + "https://www.google.com/maps/@" + latLng.latitude + "," + latLng.longitude + ",17z");
+            startActivity(intent.createChooser(intent, "Share using : "));
+        } else if (id == R.id.nav_signOut) {
             FirebaseUser user = auth.getCurrentUser();
             if (user != null) {
-                auth.signOut();
-                Intent intent = new Intent(UserLocationMainActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+                try{
+                    reference.child(auth.getCurrentUser().getUid()).child("lat").setValue("0.0");
+                    reference.child(auth.getCurrentUser().getUid()).child("lng").setValue("0.0");
+                    //auth.signOut();
+                    Intent intent = new Intent(UserLocationMainActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }catch (NullPointerException e){
+
+                }
+                //finish();
             }
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
 
         }
 
@@ -200,6 +219,8 @@ public class UserLocationMainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -238,45 +259,68 @@ public class UserLocationMainActivity extends AppCompatActivity
 
     @Override
     public void onLocationChanged(Location location) {
-        if(location == null){
-            Toast.makeText(getApplicationContext(),"Could not get location",Toast.LENGTH_SHORT).show();
-        }else{
-            latLng = new LatLng(location.getLatitude(),location.getLongitude());
+        if (location == null) {
+            Toast.makeText(getApplicationContext(), "Could not get location", Toast.LENGTH_SHORT).show();
+        } else {
+            latLng = new LatLng(location.getLatitude(), location.getLongitude());
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(latLng);
             markerOptions.title("Current Location");
+            markerOptions.anchor(0.5f, 1);
             mMap.addMarker(markerOptions);
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            mMap.setMyLocationEnabled(true);
             String s = String.valueOf(location.getLatitude());
             String sl = String.valueOf(location.getLongitude());
+            if(user != null){
                 reference.child(auth.getCurrentUser().getUid()).child("lat").setValue(s);
                 reference.child(auth.getCurrentUser().getUid()).child("lng").setValue(sl);
+            }
+            else{
+                reference.child(auth.getCurrentUser().getUid()).child("lat").setValue("0.0");
+                reference.child(auth.getCurrentUser().getUid()).child("lng").setValue("0.0");
+            }
             reference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if(dataSnapshot.getValue() != null) {
-                        String uid;
-                        uid = String.valueOf(dataSnapshot.child(auth.getUid()).getValue());
+                        //String uid;
+                        //uid = String.valueOf(dataSnapshot.child(auth.getUid()).getValue());
                         CreateUser cu = dataSnapshot.getValue(CreateUser.class);
-                        for(DataSnapshot dss : dataSnapshot.getChildren()){
-                            String id = String.valueOf(dataSnapshot.child(auth.getCurrentUser().getUid()).child("CircleMembers").child("IVOgNjsGpDU0KeecK5B9s9hDRkG3").child("circleMemberId").getValue());
-                            String userId = dss.child("userId").getValue(String.class);
-                            String i = String.valueOf(dataSnapshot.child(auth.getCurrentUser().getUid()).child("CircleMembers").child("circleMemberId").getValue());
-                            //Toast.makeText(getApplicationContext(),"i : "+i,Toast.LENGTH_SHORT).show();
-                            if(userId.equals(id)){
-                                Double la = Double.parseDouble(String.valueOf(dataSnapshot.child(userId).child("lat").getValue()));
-                                Double lo = Double.parseDouble(String.valueOf(dataSnapshot.child(userId).child("lng").getValue()));
-                                //BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_person_outline_black_24dp);
-                                latLng = new LatLng(la,lo);
-                                MarkerOptions memberMarkerOptions = new MarkerOptions();
-                                memberMarkerOptions.position(latLng);
-                                memberMarkerOptions.title(" "+dss.child("name").getValue(String.class));
-                                //memberMarkerOptions.icon(BitmapDescriptorFactory.fromPath(current_user_imageurl));
-                                memberMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-                                mMap.addMarker(memberMarkerOptions);
+                        for(final DataSnapshot dss : dataSnapshot.getChildren()){
+                            final String userId = dss.child("userId").getValue(String.class);
+                            final String name = dss.child("name").getValue(String.class);
+                            ref.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if(dataSnapshot.getValue() != null){
+                                        for(DataSnapshot d : dataSnapshot.getChildren()){
+                                            String id = String.valueOf(d.child("circleMemberId").getValue());
 
-                            }else {
+                                            if(userId.equals(id)){
+                                                    Double la = Double.parseDouble(String.valueOf(dss.child("lat").getValue()));
+                                                    Double lo = Double.parseDouble(String.valueOf(dss.child("lng").getValue()));
+                                                    latLng = new LatLng(la,lo);
+                                                    MarkerOptions memberMarkerOptions = new MarkerOptions();
+                                                    memberMarkerOptions.position(latLng);
+                                                    memberMarkerOptions.title(" "+name);
+                                                    memberMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                                                    mMap.addMarker(memberMarkerOptions);
+                                                }else {
 
-                            }
+                                                }
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
                         }
                     }else {
                         Toast.makeText(getBaseContext(), "NULLL", Toast.LENGTH_SHORT).show();

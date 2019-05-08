@@ -23,7 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 public class JoinCircleActivity extends AppCompatActivity {
 
     Pinview pin;
-    DatabaseReference reference , currentreference , circlereference;
+    DatabaseReference reference , currentreference , circlereference , ref;
     FirebaseUser user;
     FirebaseAuth auth;
     String current_user_id , join_user_id;
@@ -66,6 +66,11 @@ public class JoinCircleActivity extends AppCompatActivity {
                                         }
                                     }
                                 });
+
+                        ref = FirebaseDatabase.getInstance().getReference().child("users").child(auth.getCurrentUser().getUid()).child("CircleMembers");
+
+                        ref.child(join_user_id).child("circleMemberId").setValue(join_user_id);
+
                     }
                 }else {
                     Toast.makeText(getApplicationContext(),"Circle code is not present",Toast.LENGTH_SHORT).show();
